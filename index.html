@@ -1,0 +1,165 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-------boostrap min css-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <!--------font awesome-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+ 
+    <title>Document</title>
+   
+</head> 
+<body>
+  <body>
+  <!-- Top bar -->
+  <nav class="navbar navbar-expand-lg p-3 header text-white navbar-dark"
+       style="position: fixed; width: 100%; z-index: 9998; height: 60px;">
+      <div class="container-fluid">
+          <!-- Burger icon for mobile -->
+        
+  
+  
+          <a class="navbar-brand" href="/">
+              <img src="{{ asset('img/logos/cadwork_logo_white.svg') }}" class="img-responsive mobile-logo" alt="Logo"
+                   style="max-width: 164px; position: fixed; z-index: 100; right: 50px; top: 20px;"/>
+          </a>
+  
+          <!-- Language selector -->
+          <div class="ms-auto">
+              @include('layouts.partials.languageselector')
+          </div>
+  
+          <!-- User menu for authenticated users -->
+          @auth
+              <div class="navbar-nav ml-auto" style="padding-left: 30px;">
+                  <div class="dropdown">
+                      <a class="btn btn-secondary" style="color: white !important; position: fixed; top: 20px; left: 50px;" href="#" role="button"
+                         id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                         <i class="fa-solid fa-bars {{ auth()->guard('admin')->user() != null ? 'fa-user' : 'fa-key' }}" style="color: white;"></i>
+                          <span
+                              class="d-none">{{ auth()->guard('admin')->user() != null ? auth()->guard('admin')->user()->email : auth()->user()->dongle_id }}</span>
+                      </a>
+                      <ul class="dropdown-menu dropdown-menu-end d-lg-inline d-md-inline d-none" aria-labelledby="dropdownMenuLink" style="position: fixed; top:60px; left:0; height: 100%; width: 100%; right: 0px; ">
+                          <li class="d-lg-inline d-md-inline d-none"><a class="dropdown-item {{ request()->is('*announcements*') ? 'active' : '' }}" href="{{ route('announcements.show') }}"><i
+                                      class="fa-regular fa-fw me-3 fa-bullhorn position-relative"><span
+                                          class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"></span></i>{{ __('messages_navbar.announcements') }}</a>
+                          </li>
+                          <li class="d-lg-inline d-md-inline d-none"><a class="dropdown-item {{ request()->is('*help*') ? 'active' : '' }}" href="{{ route('help.show') }}"><i class="fa-regular fa-fw me-3 fa-question-circle"></i>{{ __('messages_navbar.help') }}</a>
+                          <li class="d-lg-inline d-md-inline d-none"><a class="dropdown-item {{ request()->is('*feedback*') ? 'active' : '' }}" href="{{ route('feedback.show') }}"><i class="fa-regular fa-fw me-3 fa-comments"></i>{{ __('messages_navbar.feedback') }}</a>
+                          </li>
+                          <li>
+                              <hr class="dropdown-divider">
+                          </li>
+                          <li class="d-lg-inline d-md-inline d-none"><a class="dropdown-item" style="color: red !important;"
+                                 href="{{ route('logout.perform') }}"><i style="color: red !important;"
+                                                                         class="fa-solid fa-fw me-3 fa-arrow-right-from-bracket"></i>{{ __('messages_navbar.logout') }}
+                              </a></li>
+                      </ul>
+                  </div>
+              </div>
+  
+          @endauth
+      </div>
+  </nav>
+  
+  <div class="container-fluid">
+      <div class="row">
+  
+          <!-- Left Side Navigation -->
+          @auth
+              <nav id="leftSidebar" class="sidebar"
+                   style="position: fixed; max-width: 250px; height: 100%; overflow-y: auto; z-index: 999; margin-top: 60px;">
+                  <div class="sidebar-sticky">
+                      <ul class="nav flex-column">
+                          <li class="nav-item">
+                              <a href="{{ auth()->guard('admin')->user() != null ? route('admincenter.licenses.show') : route('licenses.show') }}"
+                                 class="nav-link {{ request()->is('*licenses*') ? 'active' : '' }}" aria-current="page">
+                                  <i class="fa-regular fa-fw me-3 fa-key"></i>{{ __('messages_navbar.web_licenses') }}
+                              </a>
+                          </li>
+  
+                          @if(auth()->guard('admin')->user() != null)
+                              <hr style="margin: 0;">
+                              <li class="nav-item">
+                                  <a href="{{ auth()->guard('admin')->user() != null ? route('admincenter.profile.show') : '' }}"
+                                     class="nav-link {{ request()->is('*profile*') ? 'active' : '' }}">
+                                      <i class="fa-regular fa-fw me-3 fa-user"></i>{{ __('messages_navbar.profile') }}
+                                  </a>
+                              </li>
+                              <hr style="margin: 0;">
+                              <li class="nav-item">
+                                  <a href="{{ auth()->guard('admin')->user() != null ? route('admincenter.invoices.show') : '' }}"
+                                     class="nav-link {{ request()->is('*invoices*') ? 'active' : '' }}">
+                                      <i class="fa-regular fa-fw me-3 fa-file-invoice"></i>{{ __('messages_navbar.invoices') }}
+                                  </a>
+                              </li>
+                              <hr style="margin: 0;">
+                              <li class="nav-item">
+                                  <a href="{{ auth()->guard('admin')->user() != null ? route('admincenter.settings.show') : '' }}"
+                                     class="nav-link {{ request()->is('*settings*') ? 'active' : '' }}">
+                                      <i class="fa-regular fa-fw me-3 fa-gear"></i>{{ __('messages_navbar.settings') }}
+                                  </a>
+                              </li>
+  
+                              <!-- Light/Dark Mode Switch -->
+  {{--                            <hr style="margin: 0;">--}}
+  {{--                            <li class="nav-item" style="position: fixed; bottom: 80px; z-index: 9999;">--}}
+  {{--                                <div class="form-check form-switch">--}}
+  {{--                                    <input class="form-check-input" type="checkbox" id="darkModeSwitch"> Dark Mode--}}
+  {{--                                </div>--}}
+  {{--                            </li>--}}
+  
+                          @endif
+                      </ul>
+                  </div>
+              </nav>
+          @endauth
+  
+          <!-- Main Content Area -->
+          <main role="main" class="ml-sm-auto pr-0 pl-0"
+                style="width: 85%; margin-left: 250px; margin-top: 70px; padding-right: -350px; margin-bottom: 32px;">
+  
+              @yield('content')
+  
+          </main>
+  
+          @include('layouts.partials.footer')
+      </div>
+  </div>
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
